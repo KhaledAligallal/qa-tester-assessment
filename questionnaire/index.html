@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UTD Software — QA Tester Questionnaire</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f1117;
+      color: #e4e4e7;
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      color: #9ca3af;
+      font-size: 0.95rem;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #32e5ac;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+      margin-top: 2.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #2a2d37;
+    }
+
+    .card {
+      background: #1a1d27;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card label.question {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #e4e4e7;
+      margin-bottom: 0.75rem;
+    }
+
+    .card label.question .q-number {
+      color: #32e5ac;
+      font-weight: 700;
+      margin-right: 0.25rem;
+    }
+
+    .card .hint {
+      display: block;
+      color: #6b7280;
+      font-size: 0.82rem;
+      font-style: italic;
+      margin-top: -0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .required::after {
+      content: ' *';
+      color: #ef4444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      background: #0f1117;
+      border: 1px solid #2a2d37;
+      border-radius: 8px;
+      color: #e4e4e7;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #32e5ac;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2rem;
+      cursor: pointer;
+    }
+
+    select option {
+      background: #1a1d27;
+      color: #e4e4e7;
+    }
+
+    /* Pill-style radio buttons */
+    .pill-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .pill-group input[type="radio"] {
+      display: none;
+    }
+
+    .pill-group label.pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      padding: 0.45rem 0.9rem;
+      background: #0f1117;
+      border: 1px solid #2a2d37;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #9ca3af;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .pill-group input[type="radio"]:checked + label.pill {
+      background: #32e5ac;
+      border-color: #32e5ac;
+      color: #0f1117;
+      font-weight: 700;
+    }
+
+    .pill-group label.pill:hover {
+      border-color: #32e5ac;
+      color: #e4e4e7;
+    }
+
+    .pill-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.35rem;
+      padding: 0 0.25rem;
+    }
+
+    /* Code blocks */
+    .code-block {
+      background: #0f1117;
+      border: 1px solid #2a2d37;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+      color: #c9d1d9;
+    }
+
+    /* Submit button */
+    .submit-section {
+      text-align: center;
+      margin-top: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .submit-btn {
+      display: inline-block;
+      padding: 0.85rem 2.5rem;
+      background: #32e5ac;
+      color: #0f1117;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .submit-btn:hover {
+      background: #28c896;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(50, 229, 172, 0.1);
+      border: 1px solid #32e5ac;
+      border-radius: 10px;
+      color: #32e5ac;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .error-message {
+      display: none;
+      margin-top: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      border-radius: 10px;
+      color: #ef4444;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #2a2d37;
+      color: #6b7280;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>UTD Software</h1>
+      <p>QA Tester Questionnaire</p>
+    </header>
+
+    <form id="questionnaire" novalidate>
+
+      <!-- ============================================================= -->
+      <!-- SECTION 1 — About You -->
+      <!-- ============================================================= -->
+      <div class="section-title">Section 1 — About You</div>
+
+      <div class="card">
+        <label class="question required" for="full_name">
+          <span class="q-number">1.</span> Full Name
+        </label>
+        <input type="text" id="full_name" name="full_name" required placeholder="Your full name">
+      </div>
+
+      <div class="card">
+        <label class="question required" for="email">
+          <span class="q-number">2.</span> Email
+        </label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="card">
+        <label class="question required" for="github_username">
+          <span class="q-number">3.</span> GitHub Username
+        </label>
+        <input type="text" id="github_username" name="github_username" required placeholder="your-github-username">
+      </div>
+
+      <div class="card">
+        <label class="question required" for="qa_experience">
+          <span class="q-number">4.</span> Years of QA / Testing Experience
+        </label>
+        <select id="qa_experience" name="qa_experience" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="<1">&lt;1 year</option>
+          <option value="1-2">1-2 years</option>
+          <option value="2-3">2-3 years</option>
+          <option value="3-5">3-5 years</option>
+          <option value="5-8">5-8 years</option>
+          <option value="8+">8+ years</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <label class="question" for="primary_stack">
+          <span class="q-number">5.</span> Which stack are you strongest in?
+        </label>
+        <select id="primary_stack" name="primary_stack">
+          <option value="" disabled selected>Select...</option>
+          <option value="web">Web (browser-based UI)</option>
+          <option value="mobile_native">Mobile native (iOS/Android)</option>
+          <option value="mobile_flutter">Mobile Flutter / Dart</option>
+          <option value="api_backend">API / Backend</option>
+          <option value="full_stack">Full-stack (web + mobile + API)</option>
+        </select>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- SECTION 2 — Skills Self-Assessment -->
+      <!-- ============================================================= -->
+      <div class="section-title">Section 2 — Skills Self-Assessment</div>
+
+      <div class="card">
+        <label class="question">
+          <span class="q-number">6.</span> Rate your proficiency (1 = Beginner, 5 = Expert)
+        </label>
+
+        <div style="margin-top: 0.5rem;">
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">Manual testing &amp; test case design</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_manual_1" name="skill_manual" value="1"><label class="pill" for="skill_manual_1">1</label>
+              <input type="radio" id="skill_manual_2" name="skill_manual" value="2"><label class="pill" for="skill_manual_2">2</label>
+              <input type="radio" id="skill_manual_3" name="skill_manual" value="3"><label class="pill" for="skill_manual_3">3</label>
+              <input type="radio" id="skill_manual_4" name="skill_manual" value="4"><label class="pill" for="skill_manual_4">4</label>
+              <input type="radio" id="skill_manual_5" name="skill_manual" value="5"><label class="pill" for="skill_manual_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">API testing (Postman / REST Assured / Newman)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_api_1" name="skill_api" value="1"><label class="pill" for="skill_api_1">1</label>
+              <input type="radio" id="skill_api_2" name="skill_api" value="2"><label class="pill" for="skill_api_2">2</label>
+              <input type="radio" id="skill_api_3" name="skill_api" value="3"><label class="pill" for="skill_api_3">3</label>
+              <input type="radio" id="skill_api_4" name="skill_api" value="4"><label class="pill" for="skill_api_4">4</label>
+              <input type="radio" id="skill_api_5" name="skill_api" value="5"><label class="pill" for="skill_api_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">Selenium WebDriver (Java / Python / JS / C#)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_sel_1" name="skill_selenium" value="1"><label class="pill" for="skill_sel_1">1</label>
+              <input type="radio" id="skill_sel_2" name="skill_selenium" value="2"><label class="pill" for="skill_sel_2">2</label>
+              <input type="radio" id="skill_sel_3" name="skill_selenium" value="3"><label class="pill" for="skill_sel_3">3</label>
+              <input type="radio" id="skill_sel_4" name="skill_selenium" value="4"><label class="pill" for="skill_sel_4">4</label>
+              <input type="radio" id="skill_sel_5" name="skill_selenium" value="5"><label class="pill" for="skill_sel_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">Laravel testing (PHPUnit Feature/Unit, Laravel Dusk)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_lara_1" name="skill_laravel" value="1"><label class="pill" for="skill_lara_1">1</label>
+              <input type="radio" id="skill_lara_2" name="skill_laravel" value="2"><label class="pill" for="skill_lara_2">2</label>
+              <input type="radio" id="skill_lara_3" name="skill_laravel" value="3"><label class="pill" for="skill_lara_3">3</label>
+              <input type="radio" id="skill_lara_4" name="skill_laravel" value="4"><label class="pill" for="skill_lara_4">4</label>
+              <input type="radio" id="skill_lara_5" name="skill_laravel" value="5"><label class="pill" for="skill_lara_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">Flutter testing (flutter_test, widget &amp; integration tests)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_flut_1" name="skill_flutter" value="1"><label class="pill" for="skill_flut_1">1</label>
+              <input type="radio" id="skill_flut_2" name="skill_flutter" value="2"><label class="pill" for="skill_flut_2">2</label>
+              <input type="radio" id="skill_flut_3" name="skill_flutter" value="3"><label class="pill" for="skill_flut_3">3</label>
+              <input type="radio" id="skill_flut_4" name="skill_flutter" value="4"><label class="pill" for="skill_flut_4">4</label>
+              <input type="radio" id="skill_flut_5" name="skill_flutter" value="5"><label class="pill" for="skill_flut_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">MySQL / SQL — joins, indexes, query plan reading</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_sql_1" name="skill_sql" value="1"><label class="pill" for="skill_sql_1">1</label>
+              <input type="radio" id="skill_sql_2" name="skill_sql" value="2"><label class="pill" for="skill_sql_2">2</label>
+              <input type="radio" id="skill_sql_3" name="skill_sql" value="3"><label class="pill" for="skill_sql_3">3</label>
+              <input type="radio" id="skill_sql_4" name="skill_sql" value="4"><label class="pill" for="skill_sql_4">4</label>
+              <input type="radio" id="skill_sql_5" name="skill_sql" value="5"><label class="pill" for="skill_sql_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">CI/CD (GitHub Actions, GitLab CI, Jenkins)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_ci_1" name="skill_cicd" value="1"><label class="pill" for="skill_ci_1">1</label>
+              <input type="radio" id="skill_ci_2" name="skill_cicd" value="2"><label class="pill" for="skill_ci_2">2</label>
+              <input type="radio" id="skill_ci_3" name="skill_cicd" value="3"><label class="pill" for="skill_ci_3">3</label>
+              <input type="radio" id="skill_ci_4" name="skill_cicd" value="4"><label class="pill" for="skill_ci_4">4</label>
+              <input type="radio" id="skill_ci_5" name="skill_cicd" value="5"><label class="pill" for="skill_ci_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+          <div style="margin-bottom: 0;">
+            <div style="margin-bottom: 0.4rem; font-size: 0.88rem; color: #c9d1d9;">Performance &amp; load testing (JMeter, k6, Artillery)</div>
+            <div class="pill-group">
+              <input type="radio" id="skill_perf_1" name="skill_performance" value="1"><label class="pill" for="skill_perf_1">1</label>
+              <input type="radio" id="skill_perf_2" name="skill_performance" value="2"><label class="pill" for="skill_perf_2">2</label>
+              <input type="radio" id="skill_perf_3" name="skill_performance" value="3"><label class="pill" for="skill_perf_3">3</label>
+              <input type="radio" id="skill_perf_4" name="skill_performance" value="4"><label class="pill" for="skill_perf_4">4</label>
+              <input type="radio" id="skill_perf_5" name="skill_performance" value="5"><label class="pill" for="skill_perf_5">5</label>
+            </div>
+            <div class="pill-labels"><span>Beginner</span><span>Expert</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <label class="question" for="bug_tracker">
+          <span class="q-number">7.</span> Which bug tracker have you used the most?
+        </label>
+        <select id="bug_tracker" name="bug_tracker">
+          <option value="" disabled selected>Select...</option>
+          <option value="jira">Jira</option>
+          <option value="clickup">ClickUp</option>
+          <option value="azure_devops">Azure DevOps</option>
+          <option value="trello">Trello</option>
+          <option value="linear">Linear</option>
+          <option value="github_issues">GitHub Issues</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- SECTION 3 — Technical Knowledge -->
+      <!-- ============================================================= -->
+      <div class="section-title">Section 3 — Technical Knowledge</div>
+
+      <div class="card">
+        <label class="question required" for="q8">
+          <span class="q-number">8.</span> Describe the most complex thing you've ever tested. What made it complex, and how did you approach it?
+        </label>
+        <textarea id="q8" name="complex_feature" required placeholder="3-5 sentences. The feature, the complexity, your approach, the outcome."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q9">
+          <span class="q-number">9.</span> How do you decide what to automate vs what to keep as a manual test case?
+        </label>
+        <textarea id="q9" name="automate_vs_manual" placeholder="Your decision criteria — be concrete..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q10">
+          <span class="q-number">10.</span> What's wrong with this Postman test script? What would catch real bugs better?
+        </label>
+        <div class="code-block">pm.test("Login works", function () {
+    pm.response.to.have.status(200);
+    var json = pm.response.json();
+    pm.environment.set("token", json.token);
+});</div>
+        <textarea id="q10" name="postman_review" placeholder="Identify what's missing and what you'd add..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q11">
+          <span class="q-number">11.</span> What's wrong with this Selenium snippet? How would you fix it?
+        </label>
+        <div class="code-block">driver.get("https://admin.example.com/login");
+Thread.sleep(3000);
+driver.findElement(By.xpath("//*[@id='root']/div/form/div[1]/input")).sendKeys("user@x.com");
+driver.findElement(By.xpath("//*[@id='root']/div/form/button")).click();
+Thread.sleep(5000);
+Assert.assertTrue(driver.getPageSource().contains("Dashboard"));</div>
+        <textarea id="q11" name="selenium_review" placeholder="List the problems and your proposed fixes..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q12">
+          <span class="q-number">12.</span> A Laravel API endpoint sometimes returns 200 with the wrong wallet balance under high concurrency. How would you reproduce it deterministically in a test?
+        </label>
+        <textarea id="q12" name="race_condition_test" placeholder="Your approach — what tool, what setup, what assertion..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q13">
+          <span class="q-number">13.</span> A critical bug ships to production on Friday at 5:00 PM. Walk us through your process — step by step.
+        </label>
+        <textarea id="q13" name="friday_bug_process" placeholder="Step 1: ... Step 2: ... etc."></textarea>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- SECTION 4 — How You Work -->
+      <!-- ============================================================= -->
+      <div class="section-title">Section 4 — How You Work</div>
+
+      <div class="card">
+        <label class="question required" for="q14">
+          <span class="q-number">14.</span> Describe a time you disagreed with a developer or PM about whether something was a bug. What happened?
+        </label>
+        <textarea id="q14" name="bug_disagreement" required placeholder="The situation, your perspective, the outcome..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q15">
+          <span class="q-number">15.</span> How do you stay current with QA tooling and best practices?
+        </label>
+        <textarea id="q15" name="staying_current" placeholder="Your answer..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q16">
+          <span class="q-number">16.</span> What makes a good bug report? What's the difference between a bug report a dev loves and one they ignore?
+        </label>
+        <textarea id="q16" name="bug_report_quality" placeholder="Your answer..."></textarea>
+      </div>
+
+      <div class="card">
+        <label class="question" for="q17">
+          <span class="q-number">17.</span> How did you use AI tools (if at all) while completing this assessment? Be honest — we allow AI usage.
+        </label>
+        <span class="hint">There's no penalty for using AI — we want to know how you use it.</span>
+        <textarea id="q17" name="ai_usage" placeholder="Describe which tools you used and how..."></textarea>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- SECTION 5 — Submissions -->
+      <!-- ============================================================= -->
+      <div class="section-title">Section 5 — Submissions</div>
+
+      <div class="card">
+        <label class="question" for="q18">
+          <span class="q-number">18.</span> Video Walkthrough URL (Exercise 6)
+        </label>
+        <input type="url" id="q18" name="video_url" placeholder="https://www.loom.com/share/... or YouTube link">
+      </div>
+
+      <div class="card">
+        <label class="question required" for="q19">
+          <span class="q-number">19.</span> Your GitHub Repository URL
+        </label>
+        <input type="url" id="q19" name="github_repo_url" required placeholder="https://github.com/your-username/qa-tester-assessment">
+      </div>
+
+      <div class="card">
+        <label class="question" for="q20">
+          <span class="q-number">20.</span> Anything else you'd like us to know?
+        </label>
+        <textarea id="q20" name="anything_else" placeholder="Optional — share anything relevant..."></textarea>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- Submit -->
+      <!-- ============================================================= -->
+      <div class="submit-section">
+        <button type="submit" class="submit-btn" id="submitBtn">Generate Answers File</button>
+        <div class="error-message" id="errorMsg"></div>
+        <div class="success-message" id="successMsg">
+          Your <strong>questionnaire_answers.json</strong> file has been downloaded.<br>
+          Place it in the <code>answers/</code> directory of your repo and commit it.
+        </div>
+      </div>
+
+    </form>
+
+    <footer>
+      UTD Software — QA Tester Assessment
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('questionnaire').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const errorMsg = document.getElementById('errorMsg');
+      const successMsg = document.getElementById('successMsg');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Hide previous messages
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      // Validate required fields
+      const requiredFields = form.querySelectorAll('[required]');
+      const missing = [];
+      requiredFields.forEach(function(field) {
+        if (!field.value.trim()) {
+          missing.push(field.closest('.card').querySelector('.question').textContent.trim());
+        }
+      });
+
+      if (missing.length > 0) {
+        errorMsg.textContent = 'Please fill in all required fields: ' + missing.join(', ');
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      // Collect form data
+      const data = {
+        metadata: {
+          generated_at: new Date().toISOString(),
+          assessment_version: '1.0',
+          company: 'UTD Software',
+          role: 'QA Tester (Laravel + Flutter)'
+        },
+        about_you: {
+          full_name: form.full_name.value.trim(),
+          email: form.email.value.trim(),
+          github_username: form.github_username.value.trim(),
+          qa_experience: form.qa_experience.value,
+          primary_stack: form.primary_stack.value || null
+        },
+        skills_self_assessment: {
+          manual_testing: getRadioValue('skill_manual'),
+          api_testing: getRadioValue('skill_api'),
+          selenium_webdriver: getRadioValue('skill_selenium'),
+          laravel_testing: getRadioValue('skill_laravel'),
+          flutter_testing: getRadioValue('skill_flutter'),
+          mysql_sql: getRadioValue('skill_sql'),
+          cicd: getRadioValue('skill_cicd'),
+          performance_testing: getRadioValue('skill_performance'),
+          preferred_bug_tracker: form.bug_tracker.value || null
+        },
+        technical_knowledge: {
+          q8_complex_feature: form.complex_feature.value.trim(),
+          q9_automate_vs_manual: form.automate_vs_manual.value.trim() || null,
+          q10_postman_review: form.postman_review.value.trim() || null,
+          q11_selenium_review: form.selenium_review.value.trim() || null,
+          q12_race_condition_test: form.race_condition_test.value.trim() || null,
+          q13_friday_bug: form.friday_bug_process.value.trim() || null
+        },
+        how_you_work: {
+          q14_bug_disagreement: form.bug_disagreement.value.trim(),
+          q15_staying_current: form.staying_current.value.trim() || null,
+          q16_bug_report_quality: form.bug_report_quality.value.trim() || null,
+          q17_ai_usage: form.ai_usage.value.trim() || null
+        },
+        submissions: {
+          q18_video_url: form.video_url.value.trim() || null,
+          q19_github_repo_url: form.github_repo_url.value.trim(),
+          q20_anything_else: form.anything_else.value.trim() || null
+        }
+      };
+
+      // Download JSON
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'questionnaire_answers.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      // Show success
+      successMsg.style.display = 'block';
+      submitBtn.textContent = 'Download Again';
+    });
+
+    function getRadioValue(name) {
+      const selected = document.querySelector('input[name="' + name + '"]:checked');
+      return selected ? parseInt(selected.value) : null;
+    }
+  </script>
+</body>
+</html>

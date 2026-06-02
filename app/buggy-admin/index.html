@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel (Mock)</title>
+  <!-- INTENTIONAL: no viewport meta — page won't scale on mobile -->
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f6fa;
+      color: #1f2937;
+    }
+    header {
+      background: #1a1d27;
+      color: #fff;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 1.1rem; margin: 0; }
+    header .wallet {
+      background: #32e5ac;
+      color: #0f1117;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0;
+    }
+    nav button {
+      background: none;
+      border: none;
+      padding: 0.9rem 1.2rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #4b5563;
+      border-bottom: 3px solid transparent;
+    }
+    nav button.active {
+      color: #1a1d27;
+      border-bottom-color: #32e5ac;
+      font-weight: 600;
+    }
+    main { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .panel {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .panel h2 { margin-top: 0; font-size: 1.05rem; color: #1a1d27; }
+    .row { display: flex; gap: 1rem; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .row > div { flex: 1; min-width: 180px; }
+    input, select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    input:focus, select:focus { outline: 2px solid #32e5ac; border-color: #32e5ac; }
+    button.primary {
+      background: #1a1d27;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.3rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    button.primary:disabled { background: #9ca3af; cursor: not-allowed; }
+    button.danger {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f9fafb; font-weight: 600; color: #374151; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    /* INTENTIONAL bug: very low contrast on .muted */
+    .muted { color: #d8dde5; font-size: 0.8rem; }
+    .role-pill {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .role-pill.admin { background: #fee2e2; color: #b91c1c; }
+    .role-pill.user { background: #dbeafe; color: #1e40af; }
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #1a1d27;
+      color: #fff;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-top: 1px solid #e5e7eb;
+      margin-top: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Admin Panel (Mock)</h1>
+  <div>
+    <span style="font-size: 0.85rem; margin-right: 1rem;">Logged in as <strong id="current-user">qa-admin</strong></span>
+    <span class="wallet" id="wallet-balance">10000 coins</span>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="send-gift">Send Gift</button>
+  <button class="tab-btn" data-tab="users">Users</button>
+  <button class="tab-btn" data-tab="wallet">Wallet</button>
+  <button class="tab-btn" data-tab="bans">Bans</button>
+</nav>
+
+<main>
+
+  <!-- =================== SEND GIFT TAB =================== -->
+  <div id="tab-send-gift" class="tab-content active">
+    <div class="panel">
+      <h2>Send Gift (with audience bonus)</h2>
+      <p class="muted">Charge coins from your wallet to send a gift. A random subset of the room audience receives a small coin bonus.</p>
+
+      <form id="send-gift-form">
+        <div class="row">
+          <div>
+            <!-- INTENTIONAL: input has placeholder only, no <label> association -->
+            <input type="text" id="gift-room-id" placeholder="Room ID">
+          </div>
+          <div>
+            <select id="gift-id">
+              <option value="" disabled selected>Select a gift...</option>
+              <option value="1" data-price="100">🌹 Rose (100 coins)</option>
+              <option value="2" data-price="500">🎁 Box (500 coins)</option>
+              <option value="3" data-price="1500">💎 Diamond (1,500 coins)</option>
+              <option value="4" data-price="9999">🚗 Sports Car (9,999 coins)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <!-- INTENTIONAL: type=text instead of number, no min/max — accepts negatives, decimals, letters -->
+            <input type="text" id="gift-quantity" placeholder="Quantity (1-100)">
+          </div>
+          <div>
+            <!-- INTENTIONAL: no max enforced — can exceed audience size -->
+            <input type="number" id="winners-count" placeholder="Winners count" min="1">
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <span>Total cost:</span>
+          <span id="total-cost">0 coins</span>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <button type="submit" class="primary" id="send-gift-btn">Send Gift</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =================== USERS TAB =================== -->
+  <div id="tab-users" class="tab-content">
+    <div class="panel">
+      <h2>User Management</h2>
+      <p class="muted">Manage users in the system. Click "Ban" to remove access.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Coins</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-table">
+          <!-- populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =================== WALLET TAB =================== -->
+  <div id="tab-wallet" class="tab-content">
+    <div class="panel">
+      <h2>Wallet</h2>
+      <p>Current balance: <strong id="wallet-current">10000 coins</strong></p>
+      <button class="primary" id="refresh-wallet">Refresh Wallet</button>
+
+      <h3 style="margin-top: 1.5rem;">Recent transactions</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Type</th><th>Amount</th><th>Balance after</th></tr>
+        </thead>
+        <tbody id="tx-table">
+          <tr><td>TXN-001</td><td>Top-up (Stripe)</td><td>+5000</td><td>15000</td></tr>
+          <tr><td>TXN-002</td><td>Send gift</td><td>-5000</td><td>10000</td></tr>
+          <tr><td>TXN-003</td><td>Refund (PayPal)</td><td>+500</td><td>10500</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =================== BANS TAB =================== -->
+  <div id="tab-bans" class="tab-content">
+    <div class="panel">
+      <h2>Banned Users</h2>
+      <p class="muted">Users banned from the platform.</p>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Username</th><th>Reason</th><th>Banned at</th></tr>
+        </thead>
+        <tbody id="bans-table">
+          <tr><td>901</td><td>spammer_42</td><td>Posting links in chat</td><td>2026-03-12 14:22</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== STATE =====
+  let walletBalance = 10000;
+  // INTENTIONAL: hard-coded as if logged in. No real auth — yet "Ban" buttons should be admin-only.
+  // BUG: currentUserRole is read from a typo'd field, so it's always undefined → role-check fails open below
+  const currentUser = { id: 1, username: 'qa-admin', role: 'admin' };
+
+  const users = [
+    { id: 101, username: 'DJ_Master', role: 'user', coins: 1500 },
+    { id: 102, username: 'Relaxer', role: 'user', coins: 0 },
+    { id: 103, username: 'TheVeryLongUsernameThatProbablyBreaksTheLayoutInTheTableColumn_2026_Edition', role: 'user', coins: 56789 },
+    { id: 104, username: 'admin_jane', role: 'admin', coins: 99999 },
+    { id: 105, username: 'newbie', role: 'user', coins: 50 }
+  ];
+
+  // ===== TAB SWITCHING =====
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ===== SEND GIFT FORM =====
+  const giftSelect = document.getElementById('gift-id');
+  const qtyInput = document.getElementById('gift-quantity');
+  const winnersInput = document.getElementById('winners-count');
+  const totalDisplay = document.getElementById('total-cost');
+  const sendBtn = document.getElementById('send-gift-btn');
+
+  function updateTotal() {
+    const opt = giftSelect.options[giftSelect.selectedIndex];
+    const price = opt ? parseInt(opt.dataset.price || 0) : 0;
+    // INTENTIONAL: addition instead of multiplication — total is always price + quantity
+    // (e.g. 1500-coin diamond × 10 should be 15,000 but shows 1510)
+    const qty = parseInt(qtyInput.value) || 0;
+    const total = price + qty;
+    // INTENTIONAL: no thousand-separator formatting
+    totalDisplay.textContent = total + ' coins';
+  }
+
+  giftSelect.addEventListener('change', updateTotal);
+  qtyInput.addEventListener('input', updateTotal);
+
+  document.getElementById('send-gift-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const roomId = document.getElementById('gift-room-id').value;
+    const opt = giftSelect.options[giftSelect.selectedIndex];
+    const price = opt ? parseInt(opt.dataset.price || 0) : 0;
+    const qty = parseInt(qtyInput.value) || 0;
+    const winners = parseInt(winnersInput.value) || 0;
+
+    // INTENTIONAL: no validation that roomId is provided
+    // INTENTIONAL: no validation that qty > 0 (allows 0 and negative)
+    // INTENTIONAL: no validation that winners > 0 or <= audience
+    // INTENTIONAL: insufficient-balance check uses the BUGGY total above
+
+    // INTENTIONAL: charge uses correct math (price * qty), but UI showed wrong total → user is misled
+    const actualCharge = price * qty;
+
+    if (actualCharge > walletBalance) {
+      showToast('Insufficient balance');
+      return;
+    }
+
+    // INTENTIONAL: disable button but never re-enable it after success → button stays disabled
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+
+    setTimeout(() => {
+      walletBalance -= actualCharge;
+      // INTENTIONAL: only one wallet display updates; the header "wallet" pill is NOT updated
+      document.getElementById('wallet-current').textContent = walletBalance + ' coins';
+      showToast('Gift sent! Charged ' + actualCharge + ' coins.');
+      // BUG: forgot to re-enable button and reset text
+      // BUG: forgot to clear the form
+    }, 600);
+  });
+
+  // ===== USERS TABLE =====
+  function renderUsers() {
+    const tbody = document.getElementById('users-table');
+    tbody.innerHTML = '';
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      // INTENTIONAL: XSS — username is inserted via innerHTML without escaping
+      tr.innerHTML = `
+        <td>${u.id}</td>
+        <td>${u.username}</td>
+        <td><span class="role-pill ${u.role}">${u.role}</span></td>
+        <td>${u.coins}</td>
+        <td>
+          <!-- INTENTIONAL: role check uses wrong field; currentUser.is_admin is undefined, so check is always falsy ... but we INVERT it so the button SHOWS regardless of role -->
+          ${!currentUser.is_admin ? `<button class="danger" onclick="banUser(${u.id})">Ban</button>` : ''}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  window.banUser = function(id) {
+    // INTENTIONAL: removes from array, but doesn't re-render the table
+    const idx = users.findIndex(u => u.id === id);
+    if (idx >= 0) users.splice(idx, 1);
+    showToast('User banned (id ' + id + ')');
+    // BUG: forgot renderUsers() — stale UI
+  };
+
+  renderUsers();
+
+  // ===== WALLET REFRESH (with intentional JS error) =====
+  document.getElementById('refresh-wallet').addEventListener('click', () => {
+    // INTENTIONAL: tries to read .coins on an undefined fetched object
+    // Throws "TypeError: Cannot read properties of undefined (reading 'coins')" silently in console
+    const fetchedWallet = undefined;
+    try {
+      const newBalance = fetchedWallet.coins;
+      walletBalance = newBalance;
+      document.getElementById('wallet-current').textContent = walletBalance + ' coins';
+    } catch (e) {
+      // INTENTIONAL: silently logs to console and shows misleading success toast
+      console.error(e);
+      showToast('Wallet refreshed!');
+    }
+  });
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // ===== INTENTIONAL: localStorage leaks "session token" in plain text on page load =====
+  if (!localStorage.getItem('session_token')) {
+    localStorage.setItem('session_token', 'eyJhbGciOiJIUzI1NiJ9.demo.token-hardcoded-bad');
+    localStorage.setItem('admin_password', 'SuperSecret123!');
+  }
+</script>
+
+</body>
+</html>

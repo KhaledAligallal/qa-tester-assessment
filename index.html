@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Tester Assessment — UTD Software</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f1117;
+      color: #e4e4e7;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 640px; width: 100%; }
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    header .tag {
+      color: #32e5ac;
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+    }
+    header p { color: #9ca3af; font-size: 1rem; max-width: 520px; margin: 0 auto; }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 540px) { .actions { grid-template-columns: 1fr; } }
+    .action-card {
+      background: #1a1d27;
+      border: 1px solid #2a2d37;
+      border-radius: 12px;
+      padding: 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+      display: block;
+    }
+    .action-card:hover {
+      border-color: #32e5ac;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(50, 229, 172, 0.08);
+    }
+    .action-card .icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+    .action-card h3 {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.3rem;
+      font-weight: 700;
+    }
+    .action-card p {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      line-height: 1.4;
+    }
+    .repo-link {
+      display: block;
+      text-align: center;
+      background: #1a1d27;
+      border: 1px solid #2a2d37;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      color: #e4e4e7;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      margin-bottom: 1.5rem;
+    }
+    .repo-link:hover { border-color: #32e5ac; color: #fff; }
+    .repo-link strong { color: #32e5ac; }
+    .note {
+      background: rgba(50, 229, 172, 0.06);
+      border: 1px solid rgba(50, 229, 172, 0.25);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.85rem;
+      color: #c9d1d9;
+      line-height: 1.55;
+    }
+    .note strong { color: #32e5ac; }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6b7280;
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="tag">UTD Software</span>
+      <h1>QA Tester Assessment</h1>
+      <p>Technical assessment for QA Tester candidates — Laravel backend + Flutter mobile. Eight exercises covering test design, API automation, PHPUnit, Selenium, flutter_test, manual bug hunting, and QA strategy.</p>
+    </header>
+
+    <div class="actions">
+      <a class="action-card" href="./questionnaire/">
+        <div class="icon">📝</div>
+        <h3>Open the Questionnaire</h3>
+        <p>20 questions about your QA background. Generates a JSON file to commit to your forked repo.</p>
+      </a>
+      <a class="action-card" href="./app/buggy-admin/">
+        <div class="icon">🐛</div>
+        <h3>Open the Buggy Admin</h3>
+        <p>The app under test for Exercise 7 — find at least 6 intentional bugs.</p>
+      </a>
+    </div>
+
+    <a class="repo-link" href="https://github.com/mazen-salah/qa-tester-assessment">
+      📦 <strong>Full instructions + exercises on GitHub</strong> — fork this repo to begin
+    </a>
+
+    <div class="note">
+      <strong>How to start:</strong> Fork the GitHub repo, clone your fork, complete the exercises in <code>exercises/</code>, fill out the questionnaire above, then push and reply to the assessment email with your fork's URL. Recommended time is ~4 hours total, with a 5 business day window.
+    </div>
+
+    <footer>
+      UTD Software — QA Tester Assessment
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{
+  "info": {
+    "_postman_id": "00000000-0000-0000-0000-000000000000",
+    "name": "Exercise 2 — Auth & Coins API Flow (STARTER)",
+    "description": "## Exercise 2: Postman API Collection — Auth & Coins Flow\n\n| Detail     | Value          |\n|------------|----------------|\n| **Time**   | ~40 minutes    |\n| **Points** | 20             |\n| **Type**   | Code — Postman collection (run optional) |\n\n---\n\n## Why This Exercise Exists\n\nWe build API tests first in Postman before any UI automation exists. We want to see whether you can build a **reusable, chained, environment-aware** collection — not just save curl commands.\n\n---\n\n## How to Open This File\n\n1. Open **Postman** (free, https://www.postman.com/downloads/)\n2. Click **Import** → drop `exercises/exercise_2_postman_collection.json`\n3. The collection appears in the left sidebar with 4 starter requests\n4. Make your changes inside Postman, then click the collection → **Export** → save back over `exercises/exercise_2_postman_collection.json`\n\n---\n\n## Task\n\nThe starter collection has 4 request stubs hitting a hypothetical Laravel + Sanctum API. They currently have **no auth, no assertions, no variables, and no chaining**. Your job:\n\n1. **Create an environment** (in Postman, then export to `answers/postman_env.json`) with: `base_url`, `email`, `password`, `auth_token`, `user_id`, `room_id`, `gift_id`\n2. **Login request** — capture the bearer token into `{{auth_token}}` via a test script\n3. **Add a collection-level pre-request script** that auto-attaches `Authorization: Bearer {{auth_token}}` to every request except `/login`\n4. **Add response assertions to each request:**\n   - Status code\n   - Response time (< 1500ms)\n   - JSON schema validation (use `pm.response.to.have.jsonSchema(...)` with your own schema)\n   - At least one business-logic assertion per endpoint (e.g., \"remaining_balance decreased by the charged amount\")\n5. **Chain the requests** so they share state: login → get user → join room → send gift → assert balance updated\n6. **Add at least 2 negative tests** as a separate folder: expired token returns 401, send gift with invalid quantity returns 422\n\n---\n\n## Do I Need to Run It?\n\n**No — we evaluate the collection as written.** There is no real API at `api.example.com`. We are grading your test scripts, assertions, schemas, env-var usage, pre-request logic, and chaining — all of which are visible in the collection JSON itself.\n\nIf you DO want to execute it end-to-end (strong bonus signal), you have three options:\n\n- **Postman Mock Server** (built-in, free): right-click the collection → **Mock Collection** → Postman generates a `{{base_url}}` that returns example responses you define. ~5 min setup.\n- **Mockoon** (https://mockoon.com, free desktop app): point `{{base_url}}` at `http://localhost:3000` and stub the routes.\n- **Newman** (CLI): `npx newman run exercise_2_postman_collection.json -e answers/postman_env.json` — this will only succeed against a real or mock backend.\n\nIf you run it, screenshot the green test run and put it in `answers/screenshots/exercise_2_run.png`.\n\n---\n\n## Submission\n\n1. Re-export the collection from Postman over `exercises/exercise_2_postman_collection.json`\n2. Export your environment to `answers/postman_env.json`\n3. (Optional) `answers/exercise_2_notes.md` explaining any decisions (schema-validation approach, naming, etc.)\n4. (Optional) Screenshot in `answers/screenshots/exercise_2_run.png` if you actually ran it\n\n---\n\n## Evaluation Criteria\n\n| Criterion | Points | What We Look For |\n|-----------|--------|------------------|\n| Token capture & chaining | 5 | Login token flows automatically into subsequent requests via env var |\n| Assertion quality | 5 | Status + headers + body + business logic, not just status |\n| Schema validation | 3 | Reusable JSON schemas, not hand-rolled property-by-property checks |\n| Negative tests | 3 | Real auth/validation failures, not just \"send wrong URL\" |\n| Environment & pre-request usage | 2 | No hard-coded URLs/tokens; collection-level auth handling |\n| Documentation | 2 | Each request has a meaningful description |\n\n---\n\n## Important\n\n- **No hard-coded tokens, IDs, or URLs** in requests. Everything that varies per environment goes in env vars.\n- **AI will give you a flat list of requests with `pm.test('status is 200')`.** We can tell. Show real chaining and real schema validation.\n- If you have deep experience with a different API testing tool (REST Assured, Karate, Bruno), you may submit in that tool instead — note why in `answers/exercise_2_notes.md`.\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login (Sanctum)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"qa@example.com\",\n  \"password\": \"password\"\n}"
+        },
+        "url": {
+          "raw": "https://api.example.com/api/auth/login",
+          "protocol": "https",
+          "host": ["api", "example", "com"],
+          "path": ["api", "auth", "login"]
+        },
+        "description": "TODO (candidate): replace hard-coded URL/body with env vars. Capture the returned bearer token into {{auth_token}}. Add assertions for status, response schema, and that 'token' is non-empty."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Current User",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer PASTE_TOKEN_HERE" }
+        ],
+        "url": {
+          "raw": "https://api.example.com/api/users/me",
+          "protocol": "https",
+          "host": ["api", "example", "com"],
+          "path": ["api", "users", "me"]
+        },
+        "description": "TODO (candidate): remove hard-coded Authorization header — handle it at the collection level. Assert that returned user_id matches the logged-in user. Capture user_id into {{user_id}} for downstream requests."
+      },
+      "response": []
+    },
+    {
+      "name": "Join Room",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"room_id\": 12345\n}"
+        },
+        "url": {
+          "raw": "https://api.example.com/api/rooms/join",
+          "protocol": "https",
+          "host": ["api", "example", "com"],
+          "path": ["api", "rooms", "join"]
+        },
+        "description": "TODO (candidate): parameterize room_id from env. Assert the user appears in the room's audience list after joining (chain a follow-up GET if needed). Assert idempotent behavior on a second join."
+      },
+      "response": []
+    },
+    {
+      "name": "Send Gift (with audience bonus)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"room_id\": 12345,\n  \"gift_id\": 7,\n  \"quantity\": 10,\n  \"winners_count\": 5,\n  \"idempotency_key\": \"hard-coded-bad\"\n}"
+        },
+        "url": {
+          "raw": "https://api.example.com/api/gifts/send",
+          "protocol": "https",
+          "host": ["api", "example", "com"],
+          "path": ["api", "gifts", "send"]
+        },
+        "description": "TODO (candidate): generate a fresh UUID v4 for idempotency_key in a pre-request script (Postman has pm.variables.replaceIn('{{$guid}}') or you can use crypto). Capture the pre-call balance in a previous request, then assert post-call balance = pre - (quantity * gift.coin_price). Validate the 'winners' array length matches winners_count."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// TODO (candidate): add a collection-level pre-request script here that",
+          "// auto-attaches Authorization: Bearer {{auth_token}} to every request",
+          "// EXCEPT the login request itself."
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// TODO (candidate): add any collection-level test script here that runs",
+          "// after every request (e.g., assert response time, common header checks)."
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.example.com",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "generated_at": "2026-06-02T19:31:23.025Z",
+    "assessment_version": "1.0",
+    "company": "UTD Software",
+    "role": "QA Tester (Laravel + Flutter)"
+  },
+  "about_you": {
+    "full_name": "Khaled Ali Galal",
+    "email": "khaledali7g@gmail.com",
+    "github_username": "KhaledAligallal",
+    "qa_experience": "1-2",
+    "primary_stack": "full_stack"
+  },
+  "skills_self_assessment": {
+    "manual_testing": 5,
+    "api_testing": 4,
+    "selenium_webdriver": 2,
+    "laravel_testing": 2,
+    "flutter_testing": 2,
+    "mysql_sql": 5,
+    "cicd": 3,
+    "performance_testing": 3,
+    "preferred_bug_tracker": "jira"
+  },
+  "technical_knowledge": {
+    "q8_complex_feature": "The most complex thing I tested was an ATS system with AI-based candidate screening.\nThe challenge was that AI output isn't deterministic — you can't just compare \"expected vs actual.\" I was tracking three things at once: score changes, ranking shifts, and subjective output quality.\nMy approach was to build a fixed baseline — a set of test resumes I ran before every deployment and compared against. For scores I set a variance threshold. For rankings I focused on borderline candidates, that's where silent regressions actually show up. For the subjective output I did manual spot checks on a few representative resumes each time.\nThe hardest part wasn't the testing itself — it was explaining to the team that \"the AI answered differently\" doesn't always mean something broke, but it doesn't always mean nothing broke either. That judgment call is what made it complex.",
+    "q9_automate_vs_manual": "I automate anything that\n- Runs repeatedly — regression, smoke, sanity\n- Has a clear pass/fail — API response, status code, data validation\n- Is boring and easy to miss when done manually — like checking 20 payment states\n\n**I keep manual anything that:**\n- Needs a human eye — UI feel, animations, weird edge cases that don't have a fixed expected output\n- Changes too often — automating a screen that gets redesigned every sprint wastes more time than it saves\n- Is AI output — like the ATS, you can automate the score threshold check but the subjective quality needs a human\n\nThe rule I actually use: if I've run this test more than 3 times manually and it's not changing, I automate it. If I'm still discovering edge cases, I keep it manual until the feature stabilizes.",
+    "q10_postman_review": "It only checks status 200 — a lot of bugs return 200 with an error inside the body. If the API returns:\njson{ \"success\": false, \"message\": \"Invalid credentials\" }\nThis test passes. That's a real bug that gets missed.\nAlso no validation that token actually exists before setting it — if json.token is undefined, the environment variable gets set to undefined silently and every test after this breaks in a confusing way.\n\nBetter version:\njavascriptpm.test(\"Login returns 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has token\", function () {\n    var json = pm.response.json();\n    pm.expect(json.token).to.be.a('string').and.not.empty;\n    pm.environment.set(\"token\", json.token);\n});\n\npm.test(\"Success flag is true\", function () {\n    var json = pm.response.json();\n    pm.expect(json.success).to.be.true;\n});\n\npm.test(\"Response time under 500ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(500);\n});",
+    "q11_selenium_review": "1. Thread.sleep — hardcoded waits are the main reason Selenium tests are flaky. 3 seconds might be too long on a fast machine and too short on a slow CI runner.\n2. XPath like //*[@id='root']/div/form/div[1]/input — this breaks if anyone changes the HTML structure even slightly. A dev adds a wrapper div, test fails for no real reason.\n3. getPageSource().contains(\"Dashboard\") — checks raw HTML, not what the user actually sees. The word \"Dashboard\" could be in a hidden element, a comment, or a script tag and the test still passes.\n\nFixed version:\njavadriver.get(\"https://admin.example.com/login\");\n\nWebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));\n\nWebElement email = wait.until(\n    ExpectedConditions.visibilityOfElementLocated(By.id(\"email\"))\n);\nemail.sendKeys(\"user@x.com\");\n\ndriver.findElement(By.id(\"password\")).sendKeys(\"secret\");\ndriver.findElement(By.cssSelector(\"button[type='submit']\")).click();\n\nwait.until(\n    ExpectedConditions.visibilityOfElementLocated(By.id(\"dashboard-header\"))\n);\n\nAssert.assertTrue(\n    driver.findElement(By.id(\"dashboard-header\")).isDisplayed()\n);",
+    "q12_race_condition_test": "**The issue is a race condition** — two requests read the same balance before either one writes back, so both think they have enough funds.\n\nTo reproduce it deterministically I'd use `lockForUpdate()` in a test to force the exact timing — two transactions reading the same row before either commits. If the bug exists, the final balance will be wrong.\n\nThen I'd confirm the fix works by switching to an atomic `decrement()` or pessimistic locking, and running the same test again.\n\nThe reason this is hard to catch normally is you're always testing one request at a time. The bug only shows up when you force concurrency deliberately.",
+    "q13_friday_bug": "**First:** understand scope — how many users, is it still happening.\n\n**Then:** ping tech lead immediately, one clear message, no guessing.\n\n**Then:** rollback first if possible — Friday 5pm you don't investigate, you rollback.\n\n**If no rollback:** reproduce in staging, dev fixes, I verify in production not just staging.\n\n**Monday:** short post-mortem + write the test case that would've caught it."
+  },
+  "how_you_work": {
+    "q14_bug_disagreement": "تمام، كفاية كده:\n\n---\n\nOnce I flagged a feature as a bug and the dev pushed back saying he built exactly what the ticket described. He was right — the ticket was incomplete. The PM had left out key edge cases and the dev implemented it literally.\n\nMy argument was simple: the user doesn't care whose fault it is, the behavior is wrong from their perspective, so it's a bug regardless of where the gap started.\n\nThe PM acknowledged the missing info was on her side and we fixed it. But the bigger takeaway for me was that incomplete specs are a testing risk — if I catch a vague ticket early in the cycle I flag it before dev starts, not after it ships.",
+    "q15_staying_current": "تمام:\n\n---\n\nMostly LinkedIn and following people who actually work in QA and engineering, not just content creators. If someone shares a tool or approach I haven't used I try it on a side project before forming an opinion on it.\n\nI also learn a lot from bugs that slip through in real work — when something ships that shouldn't have, I reverse engineer why the test didn't catch it. That teaches me more than any article.",
+    "q16_bug_report_quality": "Dev loves:\n\nClear title, exact steps that actually reproduce it, expected vs actual, screenshot or recording, severity.\n\nDev ignores:\n\n\"Something is wrong in payment,\" no steps, no context, never reproduced.\n\nThe difference: a good report means the dev starts fixing immediately without asking me anything.",
+    "q17_ai_usage": "I used AI to help me organize and phrase my answers, but the thinking and approach are entirely mine. I'd give my answer first, then use it to help structure it better.\n\nFor example the concurrency bug, the webhook strategy, the flaky test policy — those came from my actual experience. AI just helped me put it into cleaner English."
+  },
+  "submissions": {
+    "q18_video_url": "https://drive.google.com/file/d/1k7UeUqa1GGkC54yCS_DMmyNwVHpmiVSm/view?usp=sharing",
+    "q19_github_repo_url": "https://github.com/KhaledAligallal",
+    "q20_anything_else": null
+  }
+}
